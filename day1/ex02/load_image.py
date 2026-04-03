@@ -22,4 +22,4 @@ def ft_load(path: str) -> np.array:
 
 
 if __name__ == "__main__":
-    print(ft_load("landscape.jpg"))
+    print(ft_load("../images/landscape.jpg"))

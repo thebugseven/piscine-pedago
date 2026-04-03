@@ -1,7 +1,24 @@
 #!/usr/bin/env python3
 import numpy as np
-import matplotlib.pyplot as plt
-from load_image import ft_load
+import imageio.v3 as iio
+
+
+def ft_load(path: str) -> np.array:
+    """Load an image from a file path and return it as a NumPy array."""
+    try:
+        if not path.lower().endswith(('.jpg',
+                                      '.jpeg',
+                                      '.png',
+                                      '.bmp',
+                                      '.tiff')):
+            raise ValueError("Unsupported file format."
+                             "Please provide a valid image file.")
+        image = iio.imread(path)
+        print(f"The shape of the image is: {image.shape}")
+        return image
+    except Exception as e:
+        print(f"Error loading image: {e}")
+        return np.array([])
 
 
 def zoom(path: str, factor: int) -> np.ndarray:
@@ -47,12 +64,4 @@ def zoom(path: str, factor: int) -> np.ndarray:
 
 
 if __name__ == "__main__":
-    try:
-        crop = zoom("../images/animal.jpeg", 2)
-        if crop.size > 0:
-            plt.imshow(crop, cmap='gray')
-            plt.show()
-    except Exception as e:
-        print(f"Error occurred: {e}")
-    except KeyboardInterrupt:
-        print("Process interrupted by user.")
+    print(ft_load("../images/landscape.jpg"))
