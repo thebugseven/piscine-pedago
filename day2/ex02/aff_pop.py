@@ -3,6 +3,7 @@ from load_csv import load
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+from matplotlib.ticker import FuncFormatter, MultipleLocator
 
 
 def plot_total(path: str) -> None:
@@ -17,13 +18,20 @@ def plot_total(path: str) -> None:
             print("No data to plot.")
             return
 
-        plt.figure(figsize=(10, 6))
-        if "France" not in dataset.index and "Belgium" not in dataset.index:
+        if "France" not in dataset.index or "Belgium" not in dataset.index:
             print("France or Belgium not found in the dataset.")
             return
         years = list(range(1800, 2051))
-        dF = dataset.loc["France", [str(y) for y in years]]
-        dB = dataset.loc["Belgium", [str(y) for y in years]]
+        dF = dataset.loc["France", [str(y) for y in years]].str.replace(
+            "M", "", regex=False
+        )
+        dB = dataset.loc["Belgium", [str(y) for y in years]].str.replace(
+            "M", "", regex=False
+        )
+
+        dF = pd.to_numeric(dF, errors="coerce")
+        dB = pd.to_numeric(dB, errors="coerce")
+
         plt.figure(figsize=(10, 6))
         plt.plot(years, dF, label="France")
         plt.plot(years, dB, label="Belgium")
@@ -31,6 +39,14 @@ def plot_total(path: str) -> None:
         plt.xlabel("Year")
         plt.xticks(np.arange(1800, 2051, 40))
         plt.ylabel("Total Population")
+
+        ax = plt.gca()
+
+        ax.yaxis.set_major_locator(MultipleLocator(20))
+        ax.yaxis.set_major_formatter(
+            FuncFormatter(lambda x, _: f"{x:.0f}M")
+        )
+
         plt.legend()
         plt.show()
     except Exception as e:
